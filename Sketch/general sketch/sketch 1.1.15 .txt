@@ -1,0 +1,75 @@
+#include <SPI.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+
+#define OLED_MOSI 8
+#define OLED_CLK 9
+#define OLED_DC 6
+#define OLED_CS 12
+#define OLED_RESET 7
+Adafruit_SSD1306 display(OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
+
+#include <DS1302.h>
+#include <Wire.h> 
+#include <BMP085.h>
+
+DS1302 rtc(2, 3, 4);
+BMP085 dps = BMP085(); 
+
+long Temperature = 0, Pressure = 0;
+
+void setup() {
+
+  Serial.begin(9600);
+  
+  Wire.begin(); 
+  dps.init(); 
+
+  rtc.halt(false);
+  rtc.writeProtect(false);
+
+  rtc.setTime(01, 33, 00);     // Set the time to 12:00:00 (24hr format)
+  rtc.setDate(11, 12, 2016);   // Set the date to August 6th, 2010
+}
+
+void loop() {
+ // инициализация и очистка дисплея
+ display.begin(SSD1306_SWITCHCAPVCC);
+ display.clearDisplay();
+ display.display();
+ 
+ display.setTextSize(1); // установка размера шрифта
+ display.setTextColor(WHITE); // установка цвета текста
+ display.setCursor(0,0); // установка курсора
+ 
+    dps.getPressure(&Pressure); 
+    dps.getTemperature(&Temperature);
+ 
+    display.print("(mm Hg):"); 
+    display.print(Pressure/133.3);      //Выводим давление в мм.рт ст
+    display.print("       Temp:"); 
+    display.println(Temperature*0.1);   // Температуру в градусах Цельсия
+
+    display.print(rtc.getDOWStr());
+    display.print(" ");
+    display.print(rtc.getDateStr());
+    display.print("    ");
+    display.println(rtc.getTimeStr());
+
+ display.display();
+
+
+  dps.getPressure(&Pressure); 
+  dps.getTemperature(&Temperature);
+  Serial.print("Pressure(mm Hg):"); 
+  Serial.print(Pressure/133.3);      //Выводим давление в мм.рт ст
+  Serial.print("Temp:"); 
+  Serial.println(Temperature*0.1);   // Температуру в градусах Цельсия
+  Serial.print(rtc.getDOWStr());
+  Serial.print(" ");
+  Serial.print(rtc.getDateStr());
+  Serial.print(" -- ");
+  Serial.println(rtc.getTimeStr());
+  delay (1000);
+}

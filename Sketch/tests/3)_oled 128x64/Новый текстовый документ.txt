@@ -1,0 +1,11 @@
+https://robotclass.ru/tutorials/arduino_oled/
+
+
+
+
+vcc --- vcc
+gnd --- gnd
+scl --- D10
+sda --- D9
+res --- D13
+cd  --- D11

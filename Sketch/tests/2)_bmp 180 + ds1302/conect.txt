@@ -1,0 +1,8 @@
+clk --- D2	!
+dat --- D3	!
+res --- D4	!
+		!
+		! ______ vcc --- vcc
+		!	 gnd --- gnd
+xxx --- A1	!
+xxx --- A2	!
